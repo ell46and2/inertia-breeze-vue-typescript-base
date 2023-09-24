@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\Notification\FlashNotificationAction;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +30,7 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request, FlashNotificationAction $flashNotificationAction): RedirectResponse
     {
         $user = authenticatedUser();
 
@@ -43,6 +44,8 @@ class ProfileController extends Controller
         }
 
         $user->save();
+
+        $flashNotificationAction->success('Profile updated');
 
         return Redirect::route('profile.edit');
     }

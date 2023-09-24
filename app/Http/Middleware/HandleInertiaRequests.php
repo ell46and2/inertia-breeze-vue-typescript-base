@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Enum\NotificationType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 
@@ -41,6 +43,8 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy())->toArray(),
                 'location' => $request->url(),
             ],
+            'notification' => collect(Arr::only($request->session()->all(), NotificationType::getValues()))
+                ->mapWithKeys(fn (string $message, string $key) => ['type' => $key, 'body' => $message]),
         ];
     }
 }
