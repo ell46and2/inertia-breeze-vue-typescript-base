@@ -7,7 +7,7 @@ let id = 0;
 export default () => {
     const showToast = ({ type, body }: NotificationProps) => {
         const newNotification: Notification = { id: id++, type, body };
-        notifications.value.push(newNotification);
+        notifications.value.unshift(newNotification);
 
         console.log('notifications.value', notifications.value);
 
