@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth\Register;
 
-use App\Actions\Auth\RegisterUserAction;
+use App\Actions\Auth\Register\RegisterUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\Register\RegisterStoreRequest;
 use App\Providers\RouteServiceProvider;

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Actions\Auth\RegisterUserAction;
-use App\Dto\Auth\RegisterUserStoreData;
+use App\Actions\Auth\Register\RegisterUserAction;
+use App\Dto\Auth\Register\RegisterUserStoreData;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Tests\RequestFactories\Auth\Register\RegisterStoreRequestFactory;
@@ -14,7 +14,8 @@ test('requires valid data', function ($data, $errors): void {
     $this->post(route('register.store'), RegisterStoreRequestFactory::new($data)->create())
         ->assertSessionHasErrors($errors);
 })->with([
-    'name missing' => [['name' => null], ['name']],
+    'first name missing' => [['first_name' => null], ['first_name']],
+    'last name missing' => [['last_name' => null], ['last_name']],
     'email missing' => [['email' => null], ['email']],
     'email not a valid email address' => [['email' => 'notvalid'], ['email']],
     'email already exists' => [['email' => 'hello@test.com'], ['email']],
@@ -25,7 +26,8 @@ test('requires valid data', function ($data, $errors): void {
 
 test('new users can register', function (): void {
     $postData = [
-        'name' => 'Test User',
+        'first_name' => 'Jane',
+        'last_name' => 'Doe,',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',

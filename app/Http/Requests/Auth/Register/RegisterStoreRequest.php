@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth\Register;
 
-use App\Dto\Auth\RegisterUserStoreData;
+use App\Dto\Auth\Register\RegisterUserStoreData;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
@@ -17,7 +17,12 @@ class RegisterStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
+            'first_name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'last_name' => [
                 'required',
                 'string',
                 'max:255',
@@ -45,7 +50,8 @@ class RegisterStoreRequest extends FormRequest
     public function toDto(): RegisterUserStoreData
     {
         return new RegisterUserStoreData(
-            name: $this->string('name')->toString(),
+            firstName: $this->string('first_name')->toString(),
+            lastName: $this->string('last_name')->toString(),
             email: $this->string('email')->toString(),
             password: $this->string('password')->toString(),
         );

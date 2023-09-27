@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Auth;
+namespace App\Actions\Auth\Register;
 
-use App\Dto\Auth\RegisterUserStoreData;
+use App\Dto\Auth\Register\RegisterUserStoreData;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 
