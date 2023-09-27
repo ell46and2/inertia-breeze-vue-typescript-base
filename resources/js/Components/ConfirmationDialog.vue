@@ -10,20 +10,20 @@
             </div>
 
             <div class="flex flex-col gap-y-4 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                <SecondaryButton @click="$emit('cancel')">
+                <ButtonSecondary @click="$emit('cancel')">
                     <slot name="cancel-button"><span class="w-full text-center">Cancel</span></slot>
-                </SecondaryButton>
-                <DangerButton @click="$emit('confirm')">
+                </ButtonSecondary>
+                <ButtonDanger @click="$emit('confirm')">
                     <slot name="confirm-button"><span class="w-full text-center">Yes</span></slot>
-                </DangerButton>
+                </ButtonDanger>
             </div>
         </div>
     </Modal>
 </template>
 <script setup lang="ts">
 import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import ButtonSecondary from '@/Components/Button/ButtonSecondary.vue';
+import ButtonDanger from '@/Components/Button/ButtonDanger.vue';
 
 defineEmits<{
     (e: 'confirm'): void;
