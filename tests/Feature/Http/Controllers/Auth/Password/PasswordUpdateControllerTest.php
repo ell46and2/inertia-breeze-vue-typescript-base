@@ -10,18 +10,18 @@ test('password can be updated', function (): void {
 
     $response = $this
         ->actingAs($user)
-        ->from('/profile')
-        ->put('/password', [
+        ->from(route('profile.edit'))
+        ->put(route('password.update'), [
             'current_password' => 'password',
-            'password' => 'new-password',
-            'password_confirmation' => 'new-password',
+            'password' => 'New-Password123',
+            'password_confirmation' => 'New-Password123',
         ]);
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
+        ->assertRedirect(route('profile.edit'));
 
-    $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
+    $this->assertTrue(Hash::check('New-Password123', $user->refresh()->password));
 });
 
 test('correct password must be provided to update password', function (): void {
@@ -29,8 +29,8 @@ test('correct password must be provided to update password', function (): void {
 
     $response = $this
         ->actingAs($user)
-        ->from('/profile')
-        ->put('/password', [
+        ->from(route('profile.edit'))
+        ->put(route('password.update'), [
             'current_password' => 'wrong-password',
             'password' => 'new-password',
             'password_confirmation' => 'new-password',
@@ -38,5 +38,5 @@ test('correct password must be provided to update password', function (): void {
 
     $response
         ->assertSessionHasErrors('current_password')
-        ->assertRedirect('/profile');
+        ->assertRedirect(route('profile.edit'));
 });

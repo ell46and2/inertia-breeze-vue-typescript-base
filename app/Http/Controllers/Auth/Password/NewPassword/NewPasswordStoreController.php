@@ -2,46 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth\Password\NewPassword;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\Password\NewPassword\NewPasswordStoreRequest;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 use Inertia\Response;
 
-class NewPasswordController extends Controller
+class NewPasswordStoreController extends Controller
 {
     /**
-     * Display the password reset view.
-     */
-    public function create(Request $request): Response
-    {
-        return Inertia::render('Auth/ResetPassword', [
-            'email' => $request->string('email')->toString(),
-            'token' => $request->route('token'),
-        ]);
-    }
-
-    /**
-     * Handle an incoming new password request.
-     *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(NewPasswordStoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
