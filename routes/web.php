@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\Auth\Profile\ProfileDeleteController;
 use App\Http\Controllers\Auth\Profile\ProfileEditController;
 use App\Http\Controllers\Auth\Profile\ProfileUpdateController;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,6 +44,14 @@ Route::middleware('auth')->group(function (): void {
 
     Route::delete('/profile', ProfileDeleteController::class)
         ->name('profile.destroy');
+
+    Route::get('/users', function () {
+        $users = User::paginate(10);
+
+        return Inertia::render('Users', [
+            'users' => UserResource::collection($users),
+        ]);
+    });
 });
 
 require __DIR__ . '/auth.php';
