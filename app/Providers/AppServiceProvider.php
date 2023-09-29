@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::preventLazyLoading($this->app->environment('local'));
+        Model::preventLazyLoading(true === $this->app->environment('local'));
 
         Password::defaults(function () {
             return Password::min(8)
