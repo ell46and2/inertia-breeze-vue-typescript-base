@@ -79,7 +79,7 @@ const search = () => {
                                 <TextInput v-model="filters.search" placeholder="search..." @keyup="search" />
                             </div>
 
-                            <Table>
+                            <Table id="users-table">
                                 <template #head>
                                     <TableHeading sortable direction="asc" scope="col">ID</TableHeading>
                                     <TableHeading sortable scope="col">First Name</TableHeading>
@@ -106,7 +106,7 @@ const search = () => {
                                 </template>
                             </Table>
 
-                            <Pagination class="pt-5" :data="users" />
+                            <Pagination class="pt-5" scroll-to="users-table" :data="users" />
                         </div>
                     </div>
                 </div>
