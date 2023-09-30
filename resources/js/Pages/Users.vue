@@ -49,7 +49,7 @@ const search = () => {
             page: 1,
         },
         preserveScroll: true,
-        onSuccess: (page) => (loading.value = false),
+        onSuccess: () => (loading.value = false),
     });
 };
 </script>
@@ -106,7 +106,7 @@ const search = () => {
                                 </template>
                             </Table>
 
-                            <Pagination v-if="!loading" class="pt-5" :data="users" />
+                            <Pagination class="pt-5" :data="users" />
                         </div>
                     </div>
                 </div>
