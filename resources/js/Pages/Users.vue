@@ -2,12 +2,56 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Paginator } from '@/types/pagination';
 import { UserResource } from '@/types/user-resource';
-import { usePaginator } from '@/composables/usePaginator';
 import Pagination from '@/Components/Pagination.vue';
+import { reactive, ref } from 'vue';
+import Table from '@/Components/Table/Table.vue';
+import TableHeading from '@/Components/Table/TableHeading.vue';
+import TableRow from '@/Components/Table/TableRow.vue';
+import TableCell from '@/Components/Table/TableCell.vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import TextInput from '@/Components/Form/TextInput.vue';
 
 const props = defineProps<{
     users: Paginator<UserResource>;
+    filters: {
+        search?: string;
+        column?: string;
+        direction?: string;
+    };
 }>();
+
+const filters = ref<{
+    search: string;
+    column: string;
+    direction: string;
+}>({
+    search: props.filters.search ?? '',
+    column: props.filters.column ?? '',
+    direction: props.filters.direction ?? '',
+});
+
+const resetFilters = () => {
+    filters.value = {
+        search: '',
+        column: '',
+        direction: '',
+    };
+};
+
+const loading = ref(false);
+
+const search = () => {
+    loading.value = true;
+    router.reload({
+        only: ['users'],
+        data: {
+            search: filters.value.search,
+            page: 1,
+        },
+        preserveScroll: true,
+        onSuccess: (page) => (loading.value = false),
+    });
+};
 </script>
 
 <template>
@@ -31,74 +75,38 @@ const props = defineProps<{
                     </div>
                     <div class="mt-8 flow-root overflow-hidden">
                         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                            <table class="w-full text-left">
-                                <thead class="bg-white">
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            class="relative isolate py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
-                                            ID
-                                            <div
-                                                class="absolute inset-y-0 right-full -z-10 w-screen border-b border-b-gray-200"></div>
-                                            <div
-                                                class="absolute inset-y-0 left-0 -z-10 w-screen border-b border-b-gray-200"></div>
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                                            First Name
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                                            Surname
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 md:table-cell">
-                                            Email
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                            Joined
-                                        </th>
-                                        <th scope="col" class="relative py-3.5 pl-3">
-                                            <span class="sr-only">Edit</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="user in props.users.data" :key="user.id">
-                                        <td class="relative py-4 pr-3 text-sm font-medium text-gray-900">
-                                            {{ user.id }}
-                                            <div class="absolute bottom-0 right-full h-px w-screen bg-gray-100"></div>
-                                            <div class="absolute bottom-0 left-0 h-px w-screen bg-gray-100"></div>
-                                        </td>
-                                        <td class="px-3 py-4 text-sm text-gray-500">
-                                            {{ user.first_name }}
-                                        </td>
-                                        <td class="px-3 py-4 text-sm text-gray-500">
-                                            {{ user.last_name }}
-                                        </td>
-                                        <td class="px-3 py-4 text-sm text-gray-500">
-                                            {{ user.email }}
-                                        </td>
-                                        <td class="px-3 py-4 text-sm text-gray-500">
-                                            {{ user.created_at }}
-                                        </td>
-                                        <td class="relative py-4 pl-3 text-right text-sm font-medium">
+                            <div class="pb-5">
+                                <TextInput v-model="filters.search" placeholder="search..." @keyup="search" />
+                            </div>
+
+                            <Table>
+                                <template #head>
+                                    <TableHeading sortable direction="asc" scope="col">ID</TableHeading>
+                                    <TableHeading sortable scope="col">First Name</TableHeading>
+                                    <TableHeading sortable scope="col">Surname</TableHeading>
+                                    <TableHeading sortable scope="col">Email</TableHeading>
+                                    <TableHeading sortable scope="col">Joined</TableHeading>
+                                    <TableHeading scope="col"><span class="sr-only">Edit</span></TableHeading>
+                                </template>
+                                <template #body>
+                                    <TableRow v-for="user in props.users.data" :key="user.id">
+                                        <TableCell>{{ user.id }}</TableCell>
+                                        <TableCell>{{ user.first_name }}</TableCell>
+                                        <TableCell>{{ user.last_name }}</TableCell>
+                                        <TableCell>{{ user.email }}</TableCell>
+                                        <TableCell>{{ user.created_at }}</TableCell>
+                                        <TableCell class="text-right">
                                             <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                                >Edit<span class="sr-only">, Lindsay Walton</span></a
+                                                >Edit<span class="sr-only"
+                                                    >, {{ user.first_name }} {{ user.last_name }}</span
+                                                ></a
                                             >
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
+                                </template>
+                            </Table>
 
-                                    <!-- More people... -->
-                                </tbody>
-                            </table>
-
-                            <Pagination :data="props.users" />
+                            <Pagination v-if="!loading" class="pt-5" :data="users" />
                         </div>
                     </div>
                 </div>

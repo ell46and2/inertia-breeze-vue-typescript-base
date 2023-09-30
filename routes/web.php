@@ -7,7 +7,9 @@ use App\Http\Controllers\Auth\Profile\ProfileEditController;
 use App\Http\Controllers\Auth\Profile\ProfileUpdateController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -45,13 +47,19 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/profile', ProfileDeleteController::class)
         ->name('profile.destroy');
 
-    Route::get('/users', function () {
-        $users = User::paginate(10);
+    Route::get('/users', function (Request $request) {
+        $users = User::query()
+            ->when($request->input('search'), function (Builder $query, string $search): void {
+                $query->where('first_name', 'LIKE', '%' . $search . '%');
+            })
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Users', [
             'users' => UserResource::collection($users),
+            'filters' => $request->only(['search', 'column', 'direction'])
         ]);
-    });
+    })->name('users.index');
 });
 
 require __DIR__ . '/auth.php';
