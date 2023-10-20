@@ -101,39 +101,39 @@ const sortBy = (field: string) => {
                                 <template #head>
                                     <TableHeading
                                         class="w-4"
-                                        @sort="sortBy('id')"
                                         sortable
                                         :direction="filters.sortField === 'id' ? filters.direction : null"
                                         scope="col"
+                                        @sort="sortBy('id')"
                                         >ID</TableHeading
                                     >
                                     <TableHeading
-                                        @sort="sortBy('first_name')"
                                         sortable
                                         :direction="filters.sortField === 'first_name' ? filters.direction : null"
                                         scope="col"
+                                        @sort="sortBy('first_name')"
                                         >First Name</TableHeading
                                     >
                                     <TableHeading
-                                        @sort="sortBy('last_name')"
                                         sortable
                                         :direction="filters.sortField === 'last_name' ? filters.direction : null"
                                         scope="col"
+                                        @sort="sortBy('last_name')"
                                         >Surname</TableHeading
                                     >
                                     <TableHeading
-                                        @sort="sortBy('email')"
                                         :direction="filters.sortField === 'email' ? filters.direction : null"
                                         sortable
                                         scope="col"
+                                        @sort="sortBy('email')"
                                         >Email</TableHeading
                                     >
                                     <TableHeading
                                         class="w-8"
-                                        @sort="sortBy('created_at')"
                                         :direction="filters.sortField === 'created_at' ? filters.direction : null"
                                         sortable
                                         scope="col"
+                                        @sort="sortBy('created_at')"
                                         >Joined</TableHeading
                                     >
                                     <TableHeading class="w-4" scope="col"

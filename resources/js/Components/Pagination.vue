@@ -24,10 +24,10 @@ const scroll = () => {
             <template v-for="page in paginator.pages" :key="page.label">
                 <Link
                     v-if="page.isActive"
-                    @click="scroll"
                     :preserve-scroll="!!scrollTo"
                     class="text-gray-800"
-                    :href="page.url ?? ''">
+                    :href="page.url ?? ''"
+                    @click="scroll">
                     <div>{{ page.label }}</div>
                 </Link>
                 <span v-else class="text-gray-400">{{ page.label }}</span>
