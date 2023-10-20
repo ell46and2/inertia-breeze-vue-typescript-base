@@ -22,9 +22,7 @@ const scroll = () => {
     <div v-if="paginator.pages.length > 1">
         <div class="-mb-1 flex flex-wrap">
             <template v-for="item in paginator.items" :key="item.label">
-                <div
-                    v-if="item.url === null"
-                    class="mb-1 mr-1 rounded border px-4 py-3 text-sm leading-4 text-gray-400">
+                <div v-if="!item.url" class="mb-1 mr-1 rounded border px-4 py-3 text-sm leading-4 text-gray-400">
                     <span v-html="item.label" />
                 </div>
                 <Link
