@@ -10,6 +10,7 @@ import TableRow from '@/Components/Table/TableRow.vue';
 import TableCell from '@/Components/Table/TableCell.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import TextInput from '@/Components/Form/TextInput.vue';
+import { useDebounceFn } from '@vueuse/core';
 
 const props = defineProps<{
     users: Paginator<UserResource>;
@@ -42,6 +43,7 @@ const loading = ref(false);
 
 const applyFilters = () => {
     loading.value = true;
+
     router.reload({
         only: ['users'],
         data: {
@@ -55,9 +57,9 @@ const applyFilters = () => {
     });
 };
 
-const search = () => {
+const search = useDebounceFn(() => {
     applyFilters();
-};
+});
 
 const sortBy = (field: string) => {
     if (filters.value.sortField === field) {
