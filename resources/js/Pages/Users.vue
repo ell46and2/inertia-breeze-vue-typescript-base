@@ -15,7 +15,7 @@ const props = defineProps<{
     users: Paginator<UserResource>;
     filters: {
         search?: string;
-        sortField?: string;
+        field?: string;
         direction?: 'asc' | 'desc';
     };
 }>();
@@ -26,7 +26,7 @@ const filters = ref<{
     direction: 'asc' | 'desc';
 }>({
     search: props.filters.search ?? '',
-    sortField: props.filters.sortField ?? '',
+    sortField: props.filters.field ?? '',
     direction: props.filters.direction ?? 'asc',
 });
 

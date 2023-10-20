@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function (): void {
 
         return Inertia::render('Users', [
             'users' => UserResource::collection($users),
-            'filters' => $request->only(['search', 'column', 'direction'])
+            'filters' => $request->only(['search', 'field', 'direction'])
         ]);
     })->name('users.index');
 });

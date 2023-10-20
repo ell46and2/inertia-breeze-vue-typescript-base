@@ -19,20 +19,24 @@ const scroll = () => {
 </script>
 
 <template>
-    <div>
-        <div class="flex space-x-2">
-            <template v-for="page in paginator.pages" :key="page.label">
+    <div v-if="paginator.pages.length > 1">
+        <div class="-mb-1 flex flex-wrap">
+            <template v-for="item in paginator.items" :key="item.label">
+                <div
+                    v-if="item.url === null"
+                    class="mb-1 mr-1 rounded border px-4 py-3 text-sm leading-4 text-gray-400">
+                    <span v-html="item.label" />
+                </div>
                 <Link
-                    v-if="page.isActive"
+                    v-else
+                    class="mb-1 mr-1 rounded border px-4 py-3 text-sm leading-4 hover:bg-blue-200 focus:border-indigo-500 focus:text-indigo-500"
+                    :class="{ 'bg-blue-700 text-white': item.isCurrent }"
+                    :href="item.url"
                     :preserve-scroll="!!scrollTo"
-                    class="text-gray-800"
-                    :href="page.url ?? ''"
-                    @click="scroll">
-                    <div>{{ page.label }}</div>
+                    @click="scroll"
+                    ><span v-html="item.label" />
                 </Link>
-                <span v-else class="text-gray-400">{{ page.label }}</span>
             </template>
         </div>
-        <div>Showing {{ paginator.from }} to {{ paginator.to }} of {{ paginator.total }} results</div>
     </div>
 </template>
