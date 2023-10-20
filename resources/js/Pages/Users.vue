@@ -15,42 +15,60 @@ const props = defineProps<{
     users: Paginator<UserResource>;
     filters: {
         search?: string;
-        column?: string;
-        direction?: string;
+        sortField?: string;
+        direction?: 'asc' | 'desc';
     };
 }>();
 
 const filters = ref<{
     search: string;
-    column: string;
-    direction: string;
+    sortField: string;
+    direction: 'asc' | 'desc';
 }>({
     search: props.filters.search ?? '',
-    column: props.filters.column ?? '',
-    direction: props.filters.direction ?? '',
+    sortField: props.filters.sortField ?? '',
+    direction: props.filters.direction ?? 'asc',
 });
 
 const resetFilters = () => {
     filters.value = {
         search: '',
-        column: '',
-        direction: '',
+        sortField: '',
+        direction: 'asc',
     };
 };
 
 const loading = ref(false);
 
-const search = () => {
+const applyFilters = () => {
     loading.value = true;
     router.reload({
         only: ['users'],
         data: {
             search: filters.value.search,
+            field: filters.value.sortField,
+            direction: filters.value.direction,
             page: 1,
         },
         preserveScroll: true,
         onSuccess: () => (loading.value = false),
     });
+};
+
+const search = () => {
+    applyFilters();
+};
+
+const sortBy = (field: string) => {
+    if (filters.value.sortField === field) {
+        filters.value.direction = filters.value.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        filters.value.direction = 'asc';
+    }
+
+    filters.value.sortField = field;
+
+    applyFilters();
 };
 </script>
 
@@ -81,12 +99,46 @@ const search = () => {
 
                             <Table id="users-table">
                                 <template #head>
-                                    <TableHeading sortable direction="asc" scope="col">ID</TableHeading>
-                                    <TableHeading sortable scope="col">First Name</TableHeading>
-                                    <TableHeading sortable scope="col">Surname</TableHeading>
-                                    <TableHeading sortable scope="col">Email</TableHeading>
-                                    <TableHeading sortable scope="col">Joined</TableHeading>
-                                    <TableHeading scope="col"><span class="sr-only">Edit</span></TableHeading>
+                                    <TableHeading
+                                        class="w-4"
+                                        @sort="sortBy('id')"
+                                        sortable
+                                        :direction="filters.sortField === 'id' ? filters.direction : null"
+                                        scope="col"
+                                        >ID</TableHeading
+                                    >
+                                    <TableHeading
+                                        @sort="sortBy('first_name')"
+                                        sortable
+                                        :direction="filters.sortField === 'first_name' ? filters.direction : null"
+                                        scope="col"
+                                        >First Name</TableHeading
+                                    >
+                                    <TableHeading
+                                        @sort="sortBy('last_name')"
+                                        sortable
+                                        :direction="filters.sortField === 'last_name' ? filters.direction : null"
+                                        scope="col"
+                                        >Surname</TableHeading
+                                    >
+                                    <TableHeading
+                                        @sort="sortBy('email')"
+                                        :direction="filters.sortField === 'email' ? filters.direction : null"
+                                        sortable
+                                        scope="col"
+                                        >Email</TableHeading
+                                    >
+                                    <TableHeading
+                                        class="w-8"
+                                        @sort="sortBy('created_at')"
+                                        :direction="filters.sortField === 'created_at' ? filters.direction : null"
+                                        sortable
+                                        scope="col"
+                                        >Joined</TableHeading
+                                    >
+                                    <TableHeading class="w-4" scope="col"
+                                        ><span class="sr-only">Edit</span></TableHeading
+                                    >
                                 </template>
                                 <template #body>
                                     <TableRow v-for="user in props.users.data" :key="user.id">

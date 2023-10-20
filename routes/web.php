@@ -52,6 +52,12 @@ Route::middleware('auth')->group(function (): void {
             ->when($request->input('search'), function (Builder $query, string $search): void {
                 $query->where('first_name', 'LIKE', '%' . $search . '%');
             })
+            ->when($request->input('field'), function (Builder $query) use ($request): void {
+                $query->orderBy(
+                    $request->string('field')->toString(),
+                    'desc' === $request->string('direction')->toString() ? 'desc' : 'asc'
+                );
+            })
             ->paginate(10)
             ->withQueryString();
 

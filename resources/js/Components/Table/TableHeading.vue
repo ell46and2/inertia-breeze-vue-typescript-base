@@ -9,7 +9,8 @@
         <button
             v-else
             v-bind="$attrs"
-            class="text-cool-gray-500 group flex items-center space-x-1 text-left text-xs font-medium uppercase leading-4 tracking-wider focus:underline focus:outline-none">
+            class="text-cool-gray-500 group flex items-center space-x-1 text-left text-xs font-medium uppercase leading-4 tracking-wider focus:underline focus:outline-none"
+            @click="$emit('sort')">
             <span><slot /></span>
             <span class="relative flex items-center">
                 <svg
@@ -55,4 +56,8 @@ const props = withDefaults(
         direction: null,
     },
 );
+
+defineEmits<{
+    (e: 'sort'): void;
+}>();
 </script>
