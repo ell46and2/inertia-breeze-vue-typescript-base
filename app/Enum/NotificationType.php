@@ -12,10 +12,13 @@ enum NotificationType: string
 
     public static function getValues(): array
     {
-        return [
-            self::SUCCESS->value,
-            self::ERROR->value,
-            self::WARNING->value,
-        ];
+        return array_column(self::cases(), 'value');
+    }
+
+    public static function getOptions(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn (self $type) => [$type->value => $type->value()])
+            ->toArray();
     }
 }

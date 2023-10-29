@@ -244,7 +244,7 @@
                 </div>
             </div>
 
-            <main class="py-10">
+            <main class="min-h-screen bg-gray-100 py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
                     <!-- Your content -->
                     <slot />

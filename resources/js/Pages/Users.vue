@@ -11,6 +11,7 @@ import TableCell from '@/Components/Table/TableCell.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import TextInput from '@/Components/Form/TextInput.vue';
 import { useDebounceFn } from '@vueuse/core';
+import InnerAuthenticatedLayout from '@/Layouts/InnerAuthenticatedLayout.vue';
 const props = defineProps<{
     users: Paginator<UserResource>;
     filters: {
@@ -80,88 +81,83 @@ const sortBy = (field: string) => {
 <template>
     <Head title="Users" />
 
-    <!--    <template #header>-->
-    <!--        <h2 class="text-xl font-semibold leading-tight text-gray-800">Users</h2>-->
-    <!--    </template>-->
+    <InnerAuthenticatedLayout>
+        <template #header>
+            <h1 class="text-xl font-semibold leading-tight text-gray-800">Users</h1>
+            <p class="mt-2 text-sm text-gray-700">A list of all the users</p>
+        </template>
 
-    <div class="py-12">
-        <div class="bg-white">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="sm:flex sm:items-center">
-                    <div class="sm:flex-auto">
-                        <h1 class="text-base font-semibold leading-6 text-gray-900">Users</h1>
-                        <p class="mt-2 text-sm text-gray-700">A list of all the users</p>
+        <div class="py-12">
+            <div class="rounded bg-white p-8">
+                <div class="mt-8 flow-root overflow-hidden">
+                    <div>
+                        <div class="pb-5">
+                            <TextInput v-model="filters.search" placeholder="search..." @keyup="search" />
+                        </div>
+
+                        <Table id="users-table">
+                            <template #head>
+                                <TableHeading
+                                    class="w-4"
+                                    sortable
+                                    :direction="filters.sortField === 'id' ? filters.direction : null"
+                                    scope="col"
+                                    @sort="sortBy('id')"
+                                    >ID</TableHeading
+                                >
+                                <TableHeading
+                                    sortable
+                                    :direction="filters.sortField === 'first_name' ? filters.direction : null"
+                                    scope="col"
+                                    @sort="sortBy('first_name')"
+                                    >First Name</TableHeading
+                                >
+                                <TableHeading
+                                    sortable
+                                    :direction="filters.sortField === 'last_name' ? filters.direction : null"
+                                    scope="col"
+                                    @sort="sortBy('last_name')"
+                                    >Surname</TableHeading
+                                >
+                                <TableHeading
+                                    :direction="filters.sortField === 'email' ? filters.direction : null"
+                                    sortable
+                                    scope="col"
+                                    @sort="sortBy('email')"
+                                    >Email</TableHeading
+                                >
+                                <TableHeading
+                                    class="w-8"
+                                    :direction="filters.sortField === 'created_at' ? filters.direction : null"
+                                    sortable
+                                    scope="col"
+                                    @sort="sortBy('created_at')"
+                                    >Joined</TableHeading
+                                >
+                                <TableHeading class="w-4" scope="col"><span class="sr-only">Edit</span></TableHeading>
+                            </template>
+                            <template #body>
+                                <TableRow v-for="user in props.users.data" :key="user.id">
+                                    <TableCell>{{ user.id }}</TableCell>
+                                    <TableCell>{{ user.first_name }}</TableCell>
+                                    <TableCell>{{ user.last_name }}</TableCell>
+                                    <TableCell>{{ user.email }}</TableCell>
+                                    <TableCell>{{ user.created_at }}</TableCell>
+                                    <TableCell class="text-right">
+                                        <a href="#" class="text-indigo-600 hover:text-indigo-900"
+                                            >Edit<span class="sr-only"
+                                                >, {{ user.first_name }} {{ user.last_name }}</span
+                                            ></a
+                                        >
+                                    </TableCell>
+                                </TableRow>
+                            </template>
+                        </Table>
+
+                        <Pagination class="pt-5" scroll-to="users-table" :data="users" />
                     </div>
-                </div>
-            </div>
-            <div class="mt-8 flow-root overflow-hidden">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="pb-5">
-                        <TextInput v-model="filters.search" placeholder="search..." @keyup="search" />
-                    </div>
-
-                    <Table id="users-table">
-                        <template #head>
-                            <TableHeading
-                                class="w-4"
-                                sortable
-                                :direction="filters.sortField === 'id' ? filters.direction : null"
-                                scope="col"
-                                @sort="sortBy('id')"
-                                >ID</TableHeading
-                            >
-                            <TableHeading
-                                sortable
-                                :direction="filters.sortField === 'first_name' ? filters.direction : null"
-                                scope="col"
-                                @sort="sortBy('first_name')"
-                                >First Name</TableHeading
-                            >
-                            <TableHeading
-                                sortable
-                                :direction="filters.sortField === 'last_name' ? filters.direction : null"
-                                scope="col"
-                                @sort="sortBy('last_name')"
-                                >Surname</TableHeading
-                            >
-                            <TableHeading
-                                :direction="filters.sortField === 'email' ? filters.direction : null"
-                                sortable
-                                scope="col"
-                                @sort="sortBy('email')"
-                                >Email</TableHeading
-                            >
-                            <TableHeading
-                                class="w-8"
-                                :direction="filters.sortField === 'created_at' ? filters.direction : null"
-                                sortable
-                                scope="col"
-                                @sort="sortBy('created_at')"
-                                >Joined</TableHeading
-                            >
-                            <TableHeading class="w-4" scope="col"><span class="sr-only">Edit</span></TableHeading>
-                        </template>
-                        <template #body>
-                            <TableRow v-for="user in props.users.data" :key="user.id">
-                                <TableCell>{{ user.id }}</TableCell>
-                                <TableCell>{{ user.first_name }}</TableCell>
-                                <TableCell>{{ user.last_name }}</TableCell>
-                                <TableCell>{{ user.email }}</TableCell>
-                                <TableCell>{{ user.created_at }}</TableCell>
-                                <TableCell class="text-right">
-                                    <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                        >Edit<span class="sr-only"
-                                            >, {{ user.first_name }} {{ user.last_name }}</span
-                                        ></a
-                                    >
-                                </TableCell>
-                            </TableRow>
-                        </template>
-                    </Table>
-
-                    <Pagination class="pt-5" scroll-to="users-table" :data="users" />
                 </div>
             </div>
         </div>
-    </div>
+    </InnerAuthenticatedLayout>
 </template>
